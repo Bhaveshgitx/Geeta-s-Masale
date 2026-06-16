@@ -805,58 +805,21 @@ export default function InquiryDrawer({
                 )}
 
                 {step === 'pay' && (
-                  <div className="space-y-3.5 text-left">
+                  <div className="space-y-4 text-left">
                     <span className="text-[10px] font-mono text-gray-400 uppercase font-black tracking-wider block text-center mb-1">
-                      ⚡ Tap your Installed UPI App to Pay ₹{payAmount}:
+                      ⚡ Tap to open any installed UPI App to Pay ₹{payAmount}:
                     </span>
                     
-                    <div className="grid grid-cols-2 gap-2">
-                      {/* PhonePe */}
-                      <a
-                        href={`phonepe://pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
-                        className="flex items-center justify-center space-x-1.5 py-3 px-1.5 rounded-xl bg-[#5F259F] hover:bg-[#4E1E82] text-white text-[11px] font-sans font-black uppercase transition-all shadow-md active:scale-95 text-center cursor-pointer"
-                      >
-                        <span>PhonePe</span>
-                      </a>
+                    <a
+                      href={upiString}
+                      className="w-full inline-flex items-center justify-center space-x-2.5 py-4 rounded-xl bg-[#A61B1B] hover:bg-rose-950 text-white text-xs font-sans font-black tracking-widest uppercase transition-all shadow-[0_10px_25px_rgba(166,27,27,0.15)] text-center active:scale-[0.98] cursor-pointer"
+                    >
+                      <Smartphone className="w-4 h-4 animate-pulse shrink-0 text-white" />
+                      <span>Pay via UPI App (₹{payAmount})</span>
+                    </a>
 
-                      {/* Google Pay */}
-                      <a
-                        href={`tez://upi/pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
-                        className="flex items-center justify-center space-x-1.5 py-3 px-1.5 rounded-xl bg-[#1A73E8] hover:bg-[#155CB8] text-white text-[11px] font-sans font-black uppercase transition-all shadow-md active:scale-95 text-center cursor-pointer"
-                      >
-                        <span>Google Pay</span>
-                      </a>
-
-                      {/* Paytm */}
-                      <a
-                        href={`paytmmp://pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
-                        className="flex items-center justify-center space-x-1.5 py-3 px-1.5 rounded-xl bg-[#00b9e6] hover:bg-[#009ac2] text-white text-[11px] font-sans font-black uppercase transition-all shadow-md active:scale-95 text-center cursor-pointer"
-                      >
-                        <span>Paytm</span>
-                      </a>
-
-                      {/* FamPay */}
-                      <a
-                        href={`fampay://upi/pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
-                        className="flex items-center justify-center space-x-1.5 py-3 px-1.5 rounded-xl bg-[#000000] hover:bg-neutral-800 text-white text-[11px] font-sans font-black uppercase transition-all shadow-md active:scale-95 text-center cursor-pointer"
-                      >
-                        <span>FamPay</span>
-                      </a>
-                    </div>
-
-                    {/* Generic Fallback */}
-                    <div className="pt-1 flex justify-center">
-                      <a
-                        href={upiString}
-                        className="inline-flex items-center space-x-1 text-[10px] font-mono font-black text-[#A61B1B] hover:underline"
-                      >
-                        <Smartphone className="w-3 h-3 text-[#A61B1B]" />
-                        <span>Other UPI App / Auto Launch ↗</span>
-                      </a>
-                    </div>
-                    
-                    <p className="text-[9px] font-sans text-center text-gray-400 select-none pt-0.5 leading-tight">
-                      *Note: On iOS, generic auto launch may open WhatsApp Pay. Use the branded buttons above to open your exact app directly.
+                    <p className="text-[9px] font-sans text-center text-gray-400 select-none pt-1 leading-normal">
+                      This will automatically open your device's payment app prompt (e.g. Google Pay, PhonePe, Paytm, or FamPay) to complete the transaction safely and securely.
                     </p>
                   </div>
                 )}

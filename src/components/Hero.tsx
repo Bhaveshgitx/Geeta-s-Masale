@@ -257,7 +257,7 @@ export default function Hero({ onExploreClick, onWhatsAppClick, onSelectCategory
           </div>
 
           {/* Minimal Elegant 3D Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 pt-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-6 pt-6">
             {CATEGORIES.map((cat, idx) => (
               <motion.div
                 key={cat.id}
@@ -270,7 +270,7 @@ export default function Hero({ onExploreClick, onWhatsAppClick, onSelectCategory
                   borderColor: 'rgba(166,27,27,0.3)',
                 }}
                 onClick={() => onSelectCategory(cat.id)}
-                className="group relative h-72 sm:h-96 rounded-2xl overflow-hidden border border-slate-200/60 p-4 sm:p-5 flex flex-col justify-end cursor-pointer bg-white transition-all duration-300"
+                className="group relative h-64 sm:h-96 rounded-2xl overflow-hidden border border-slate-200/60 p-3 sm:p-5 flex flex-col justify-end cursor-pointer bg-white transition-all duration-300"
               >
                 {/* Image backdrop container with smooth high-contrast zoom */}
                 <div className="absolute inset-0 z-0">
