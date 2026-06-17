@@ -39,7 +39,7 @@ export default function Hero({ onExploreClick, onWhatsAppClick, onSelectCategory
   return (
     <section
       id="hero"
-      className="relative w-full overflow-hidden bg-[#FAF9F6] pt-20 sm:pt-28 pb-16 snap-start scroll-mt-20 border-b border-slate-100"
+      className="relative w-full overflow-hidden bg-[#FAF9F6] pt-24 sm:pt-32 pb-16 snap-start scroll-mt-20 border-b border-slate-100"
     >
       {/* Subtle background color gradients for elegant depth */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">

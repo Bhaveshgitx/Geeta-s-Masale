@@ -53,12 +53,12 @@
         id="main-app-navbar"
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.02)] border-b border-slate-100 py-2'
-            : 'bg-[#FAF9F6]/90 backdrop-blur-sm border-b border-slate-200/40 py-4'
+            ? 'bg-white/95 backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.02)] border-b border-slate-100 py-1'
+            : 'bg-[#FAF9F6]/90 backdrop-blur-sm border-b border-slate-200/40 py-2 sm:py-2.5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16 sm:h-20' : 'h-22 sm:h-28'}`}>
+          <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-12 sm:h-14' : 'h-14 sm:h-16'}`}>
             
             {/* Logo and Branding with red & dark slate styling directly from image */}
             <div
@@ -70,8 +70,8 @@
                 <img
                   src="https://ik.imagekit.io/9f6w6a0wf/logo.png.png"
                   alt="Geeta's Logo"
-                  className={`object-contain transition-all duration-300 hover:scale-[1.05] ${
-                    isScrolled ? 'h-12 sm:h-16' : 'h-16 sm:h-22'
+                  className={`object-contain transition-all duration-305 hover:scale-[1.05] ${
+                    isScrolled ? 'h-8 sm:h-10' : 'h-10 sm:h-12'
                   }`}
                   onError={() => setLogoError(true)}
                   referrerPolicy="no-referrer"
