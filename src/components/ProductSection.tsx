@@ -16,6 +16,8 @@ interface ProductSectionProps {
   onSelectCategory: (category: string) => void;
   onAddToInquiry: (product: Product, quantity: number) => void;
   inquiryList: { product: Product; quantity: number }[];
+  productsList?: Product[];
+  categoriesList?: any[];
 }
 
 export default function ProductSection({
@@ -25,24 +27,31 @@ export default function ProductSection({
   onSelectCategory,
   onAddToInquiry,
   inquiryList,
+  productsList,
+  categoriesList,
 }: ProductSectionProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [modalQuantity, setModalQuantity] = useState(1);
   const [sortBy, setSortBy] = useState<'mrp-asc' | 'mrp-desc' | 'name' | 'default'>('default');
 
   // Categories list
-  const filterTabs = [
-    { id: 'all', label: 'All Products' },
-    { id: 'Masale', label: 'Masalas & Chutneys' },
-    { id: 'Pith', label: 'Traditional Flours' },
-    { id: 'Malvani products', label: 'Meva & Snacks' },
-    { id: 'Laddoos', label: 'Handmade Laddoos' },
-    { id: 'Kaju', label: 'Malvan Cashews' },
-  ];
+  const filterTabs = categoriesList && categoriesList.length > 0
+    ? [
+        { id: 'all', label: 'All Products' },
+        ...categoriesList.map(c => ({ id: c.id, label: c.name }))
+      ]
+    : [
+        { id: 'all', label: 'All Products' },
+        { id: 'Masale', label: 'Masalas & Chutneys' },
+        { id: 'Pith', label: 'Traditional Flours' },
+        { id: 'Malvani products', label: 'Meva & Snacks' },
+        { id: 'Laddoos', label: 'Handmade Laddoos' },
+        { id: 'Kaju', label: 'Malvan Cashews' },
+      ];
 
   // Process sorting & filtering
   const filteredProducts = useMemo(() => {
-    let result = [...PRODUCTS];
+    let result = productsList && productsList.length > 0 ? [...productsList] : [...PRODUCTS];
 
     // Category filter
     if (selectedCategory && selectedCategory !== 'all') {

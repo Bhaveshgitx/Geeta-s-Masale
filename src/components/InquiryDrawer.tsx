@@ -60,6 +60,69 @@ export default function InquiryDrawer({
   const [copied, setCopied] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
+  // Dynamic database coupon states
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    setCouponError('');
+    try {
+      const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponCode.trim())}`);
+      if (res.ok) {
+        const data = await res.json();
+        setAppliedCoupon(data);
+      } else {
+        const err = await res.json();
+        setCouponError(err.message || 'Invalid coupon code');
+        setAppliedCoupon(null);
+      }
+    } catch (e) {
+      setCouponError('Failed to validate coupon');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const submitOrderToBackend = async (method: 'COD' | 'UPI', paidAmt = 0) => {
+    try {
+      const itemsPayload = inquiryList.map(item => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        quantity: item.quantity,
+        price: item.product.mrp,
+        weight: item.product.weight
+      }));
+
+      const payload = {
+        customerName: fullName,
+        customerPhone: mobile,
+        customerAddress: `${streetAddress}${landmark ? ` (Landmark: ${landmark})` : ''}, ${cityStatePincode}`,
+        customerEmail: '',
+        items: itemsPayload,
+        paymentType: method,
+        amount: finalTotalBill,
+        paidAmount: paidAmt
+      };
+
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        console.log("Order saved to database successfully!");
+      }
+    } catch (e) {
+      console.error("Failed to post order to backend:", e);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined' && window.navigator) {
       const ua = window.navigator.userAgent.toLowerCase();
@@ -71,6 +134,9 @@ export default function InquiryDrawer({
   useEffect(() => {
     if (!isOpen) {
       setStep('bag');
+      setCouponCode('');
+      setAppliedCoupon(null);
+      setCouponError('');
     }
   }, [isOpen]);
 
@@ -83,8 +149,13 @@ export default function InquiryDrawer({
   // Pricing calculations
   const totalPricing = inquiryList.reduce((acc, item) => acc + item.product.mrp * item.quantity, 0);
   const deliveryFee = totalPricing > 499 ? 0 : 40;
-  const discountAmount = Math.round(totalPricing * 0.1); // 10% authentic Konkan Heritage discount
-  const finalTotalBill = totalPricing + deliveryFee - discountAmount;
+
+  // Coupon vs heritage standard offer application
+  const discountPct = appliedCoupon ? Number(appliedCoupon.discount) / 100 : 0.10; // 10% authentic Konkan Heritage discount by default
+  const maxDiscAmount = appliedCoupon?.maxDiscount ? Number(appliedCoupon.maxDiscount) : 99999;
+  const discountAmount = Math.min(Math.round(totalPricing * discountPct), maxDiscAmount);
+
+  const finalTotalBill = Math.max(0, totalPricing + deliveryFee - discountAmount);
 
   // Safely calculate pay amount based on selected mode
   const payAmount = amountMode === 'full'
@@ -570,6 +641,51 @@ export default function InquiryDrawer({
                       ))}
                     </div>
 
+                    {/* Dynamic coupon application block */}
+                    <div className="bg-white rounded-xl p-3.5 border border-slate-200 space-y-2 text-left">
+                      <span className="text-[9px] font-mono text-slate-400 uppercase font-black tracking-wider block">Promo Coupon Code</span>
+                      <div className="flex space-x-2">
+                        <input
+                          type="text"
+                          placeholder="e.g. GEETA20"
+                          value={couponCode}
+                          onChange={(e) => {
+                            setCouponCode(e.target.value.toUpperCase());
+                            setCouponError('');
+                          }}
+                          disabled={appliedCoupon !== null}
+                          className="flex-1 text-xs px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl uppercase font-bold focus:outline-none focus:ring-1 focus:ring-[#A61B1B] text-slate-800 disabled:opacity-75"
+                        />
+                        {appliedCoupon ? (
+                          <button
+                            onClick={() => {
+                              setAppliedCoupon(null);
+                              setCouponCode('');
+                            }}
+                            className="px-3 py-2 rounded-xl text-xs font-sans font-extrabold bg-slate-100 text-red-650 hover:bg-slate-200 cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        ) : (
+                          <button
+                            onClick={handleApplyCoupon}
+                            disabled={couponLoading || !couponCode.trim()}
+                            className="px-4 py-2 rounded-xl text-xs font-sans font-extrabold bg-[#A61B1B] text-white hover:bg-red-800 disabled:opacity-50 cursor-pointer"
+                          >
+                            {couponLoading ? '...' : 'Apply'}
+                          </button>
+                        )}
+                      </div>
+                      {couponError && (
+                        <p className="text-[10px] text-red-600 font-mono font-medium">{couponError}</p>
+                      )}
+                      {appliedCoupon && (
+                        <p className="text-[10px] text-emerald-600 font-mono font-bold">
+                          🎉 Active: "{appliedCoupon.code}" ({appliedCoupon.discount}% Off up to ₹{appliedCoupon.maxDiscount || 500})
+                        </p>
+                      )}
+                    </div>
+
                     {/* Exact Flipkart styled billing detail container */}
                     <div className="bg-white rounded-xl p-4.5 border border-slate-200 shadow-xs space-y-3">
                       <h4 className="text-xs font-mono font-black text-[#A61B1B] uppercase tracking-wider border-b border-gray-100 pb-2">Price Details</h4>
@@ -785,7 +901,10 @@ export default function InquiryDrawer({
                   <div className="grid grid-cols-2 gap-2 text-left">
                     {/* Share Directly */}
                     <button
-                      onClick={handleTransmitWhatsApp}
+                      onClick={() => {
+                        submitOrderToBackend('COD', 0);
+                        handleTransmitWhatsApp();
+                      }}
                       className="inline-flex items-center justify-center space-x-1 py-3.5 px-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-sans font-extrabold uppercase transition cursor-pointer"
                     >
                       <MessageSquare className="w-3.5 h-3.5 fill-current text-white shrink-0" />
@@ -812,6 +931,12 @@ export default function InquiryDrawer({
                     
                     <a
                       href={upiString}
+                      onClick={() => {
+                        submitOrderToBackend('UPI', payAmount);
+                        setTimeout(() => {
+                          handleTransmitWhatsAppPay();
+                        }, 800);
+                      }}
                       className="w-full inline-flex items-center justify-center space-x-2.5 py-4 rounded-xl bg-[#A61B1B] hover:bg-rose-950 text-white text-xs font-sans font-black tracking-widest uppercase transition-all shadow-[0_10px_25px_rgba(166,27,27,0.15)] text-center active:scale-[0.98] cursor-pointer"
                     >
                       <Smartphone className="w-4 h-4 animate-pulse shrink-0 text-white" />

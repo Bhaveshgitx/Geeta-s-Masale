@@ -17,6 +17,7 @@ import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import InquiryDrawer from './components/InquiryDrawer';
+import AdminDashboard from './components/AdminDashboard';
 import { Product } from './types';
 
 export default function App() {
@@ -24,6 +25,37 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [inquiryBag, setInquiryBag] = useState<{ product: Product; quantity: number }[]>([]);
   const [inquiryDrawerOpen, setInquiryDrawerOpen] = useState(false);
+
+  // Full-stack dynamic data lists
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [categoriesList, setCategoriesList] = useState<any[]>([]);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchStoreData = async () => {
+    try {
+      const [prodRes, catRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/categories')
+      ]);
+      if (prodRes.ok) {
+        const prodData = await prodRes.json();
+        setProductsList(prodData);
+      }
+      if (catRes.ok) {
+        const catData = await catRes.json();
+        setCategoriesList(catData);
+      }
+    } catch (e) {
+      console.error("Failed to load products/categories from express DB APIs:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStoreData();
+  }, [adminOpen]);
 
   // Smooth scroll helper
   const handleScrollToSection = (sectionId: string) => {
@@ -76,6 +108,11 @@ export default function App() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  // If Admin panel dashboard is activated, direct viewport to dashboard workspace
+  if (adminOpen) {
+    return <AdminDashboard onClose={() => setAdminOpen(false)} />;
+  }
+
   return (
     <motion.div
       key="main-app-content"
@@ -110,6 +147,8 @@ export default function App() {
         onSelectCategory={setSelectedCategory}
         onAddToInquiry={handleAddToInquiry}
         inquiryList={inquiryBag}
+        productsList={productsList}
+        categoriesList={categoriesList}
       />
 
       <Heritage />
@@ -124,7 +163,10 @@ export default function App() {
 
       <Contact />
 
-      <Footer onNavigate={handleScrollToSection} />
+      <Footer
+        onNavigate={handleScrollToSection}
+        onOpenAdmin={() => setAdminOpen(true)}
+      />
 
       {/* Shopping Inquiry side drawer */}
       <InquiryDrawer

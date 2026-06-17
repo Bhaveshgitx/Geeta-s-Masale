@@ -9,9 +9,10 @@ import { MessageSquare, Phone, MapPin, Compass, ArrowUp, Send, CheckCircle2 } fr
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
+  onOpenAdmin?: () => void;
 }
 
-export default function Footer({ onNavigate }: FooterProps) {
+export default function Footer({ onNavigate, onOpenAdmin }: FooterProps) {
   const [emailSub, setEmailSub] = useState('');
   const [success, setSuccess] = useState(false);
   const [logoError, setLogoError] = useState(false);
@@ -202,7 +203,17 @@ export default function Footer({ onNavigate }: FooterProps) {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-slate-400 uppercase tracking-widest text-center sm:text-left gap-4">
           <div className="space-y-1 block">
             <p>© 2026 GEETA'S MASALE. AUTHENTIC MALVANI TASTE, CRAFTED WITH TRADITION.</p>
-            <p className="text-[9px] text-slate-500 normal-case">Directly Sourced inside Kasal-Malvan Rd, Maharashtra 416606</p>
+            <p className="text-[9px] text-slate-500 normal-case">
+              Directly Sourced inside Kasal-Malvan Rd, Maharashtra 416606
+              {onOpenAdmin && (
+                <>
+                  {' • '}
+                  <button onClick={onOpenAdmin} className="text-[#A61B1B] font-bold hover:underline cursor-pointer">
+                    🔑 Manage Store (Admin)
+                  </button>
+                </>
+              )}
+            </p>
           </div>
 
           {/* Back to top bullet button */}
