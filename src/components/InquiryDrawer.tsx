@@ -925,27 +925,119 @@ export default function InquiryDrawer({
 
                 {step === 'pay' && (
                   <div className="space-y-4 text-left">
-                    <span className="text-[10px] font-mono text-gray-400 uppercase font-black tracking-wider block text-center mb-1">
-                      ⚡ Tap to open any installed UPI App to Pay ₹{payAmount}:
-                    </span>
-                    
-                    <a
-                      href={upiString}
-                      onClick={() => {
-                        submitOrderToBackend('UPI', payAmount);
-                        setTimeout(() => {
-                          handleTransmitWhatsAppPay();
-                        }, 800);
-                      }}
-                      className="w-full inline-flex items-center justify-center space-x-2.5 py-4 rounded-xl bg-[#A61B1B] hover:bg-rose-950 text-white text-xs font-sans font-black tracking-widest uppercase transition-all shadow-[0_10px_25px_rgba(166,27,27,0.15)] text-center active:scale-[0.98] cursor-pointer"
-                    >
-                      <Smartphone className="w-4 h-4 animate-pulse shrink-0 text-white" />
-                      <span>Pay via UPI App (₹{payAmount})</span>
-                    </a>
+                    {isIOS ? (
+                      <div className="space-y-3.5">
+                        <div className="flex items-center justify-center space-x-1.5 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                          <span className="text-[10px] font-mono text-amber-700 font-extrabold uppercase tracking-wider">
+                            🍎 iOS Device Detected (iPhone / iPad)
+                          </span>
+                        </div>
+                        <p className="text-[9.5px] font-sans text-gray-500 leading-normal text-center">
+                          Apple restricts standard wildcards. tap your installed app to pay:
+                        </p>
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                          {/* Google Pay */}
+                          <a
+                            href={`gpay://upi/pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
+                            onClick={() => {
+                              submitOrderToBackend('UPI', payAmount);
+                              setTimeout(() => {
+                                handleTransmitWhatsAppPay();
+                              }, 1200);
+                            }}
+                            className="inline-flex items-center justify-center space-x-1.5 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-mono font-bold tracking-wider uppercase transition cursor-pointer"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+                            <span>Google Pay</span>
+                          </a>
 
-                    <p className="text-[9px] font-sans text-center text-gray-400 select-none pt-1 leading-normal">
-                      This will automatically open your device's payment app prompt (e.g. Google Pay, PhonePe, Paytm, or FamPay) to complete the transaction safely and securely.
-                    </p>
+                          {/* PhonePe */}
+                          <a
+                            href={`phonepe://upi/pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
+                            onClick={() => {
+                              submitOrderToBackend('UPI', payAmount);
+                              setTimeout(() => {
+                                handleTransmitWhatsAppPay();
+                              }, 1200);
+                            }}
+                            className="inline-flex items-center justify-center space-x-1.5 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-mono font-bold tracking-wider uppercase transition cursor-pointer"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0" />
+                            <span>PhonePe</span>
+                          </a>
+
+                          {/* Paytm */}
+                          <a
+                            href={`paytmmp://upi/pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
+                            onClick={() => {
+                              submitOrderToBackend('UPI', payAmount);
+                              setTimeout(() => {
+                                handleTransmitWhatsAppPay();
+                              }, 1200);
+                            }}
+                            className="inline-flex items-center justify-center space-x-1.5 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-mono font-bold tracking-wider uppercase transition cursor-pointer"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 shrink-0" />
+                            <span>Paytm</span>
+                          </a>
+
+                          {/* BHIM UPI */}
+                          <a
+                            href={`bhim://upi/pay?pa=bhavesh62006@fam&pn=Geetas%20Masale&am=${payAmount}&cu=INR`}
+                            onClick={() => {
+                              submitOrderToBackend('UPI', payAmount);
+                              setTimeout(() => {
+                                handleTransmitWhatsAppPay();
+                              }, 1200);
+                            }}
+                            className="inline-flex items-center justify-center space-x-1.5 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-mono font-bold tracking-wider uppercase transition cursor-pointer"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 shrink-0" />
+                            <span>BHIM App</span>
+                          </a>
+                        </div>
+
+                        {/* Standard generic fallback link */}
+                        <a
+                          href={upiString}
+                          onClick={() => {
+                            submitOrderToBackend('UPI', payAmount);
+                            setTimeout(() => {
+                              handleTransmitWhatsAppPay();
+                            }, 1200);
+                          }}
+                          className="w-full inline-flex items-center justify-center space-x-2 py-3.5 rounded-xl bg-[#A61B1B] hover:bg-rose-950 text-white text-[10px] font-mono font-black tracking-widest uppercase transition-all shadow-md text-center cursor-pointer"
+                        >
+                          <Smartphone className="w-3.5 h-3.5 shrink-0 text-white" />
+                          <span>Any other UPI App (₹{payAmount})</span>
+                        </a>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-[10px] font-mono text-gray-400 uppercase font-black tracking-wider block text-center mb-1">
+                          ⚡ Tap to open any installed UPI App to Pay ₹{payAmount}:
+                        </span>
+                        
+                        <a
+                          href={upiString}
+                          onClick={() => {
+                            submitOrderToBackend('UPI', payAmount);
+                            setTimeout(() => {
+                              handleTransmitWhatsAppPay();
+                            }, 800);
+                          }}
+                          className="w-full inline-flex items-center justify-center space-x-2.5 py-4 rounded-xl bg-[#A61B1B] hover:bg-rose-950 text-white text-xs font-sans font-black tracking-widest uppercase transition-all shadow-[0_10px_25px_rgba(166,27,27,0.15)] text-center active:scale-[0.98] cursor-pointer"
+                        >
+                          <Smartphone className="w-4 h-4 animate-pulse shrink-0 text-white" />
+                          <span>Pay via UPI App (₹{payAmount})</span>
+                        </a>
+
+                        <p className="text-[9px] font-sans text-center text-gray-400 select-none pt-1 leading-normal">
+                          This will automatically open your device's payment app prompt (e.g. Google Pay, PhonePe, Paytm, or FamPay) to complete the transaction safely and securely.
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

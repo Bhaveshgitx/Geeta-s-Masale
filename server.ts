@@ -29,7 +29,7 @@ async function startServer() {
   });
 
   // Hot module replacement or dev-production setups
-  if (process.env.NODE_ENV !== 'production' && !process.env.DISABLE_HMR) {
+  if (process.env.NODE_ENV !== 'production') {
     console.log('Initializing Vite dev-middleware server...');
     const vite = await createViteServer({
       server: { middlewareMode: true },
